@@ -14,15 +14,16 @@ var config = {
   //On click of submit button...//
   $("#submit").on("click", function(event) {
     event.preventDefault();
+
     var trainName = $("#train-name").val().trim();
     var trainDestination = $("#train-destination").val().trim();
     var trainTime = moment($("#train-time").val()).format("HH:mm");
     var trainFrequency = $("#train-frequency").val().trim();
+
     console.log(trainName);
     console.log(trainDestination);
     console.log(trainTime);
     console.log(trainFrequency);
-    console.log(moment($("#train-time").val()).format("HH:mm"));
 
     var train = {
       name: trainName,
@@ -33,7 +34,7 @@ var config = {
 
     database.ref().push(train);
 
-    alert("Train successfully added!");
+    // alert("Train successfully added!");
 
     $("#train-name").val("");
     $("#train-destination").val("");
@@ -41,14 +42,17 @@ var config = {
     $("#train-frequency").val("");
   })
 
+//Add TD's when child is added in Firebase//
   database.ref().on("child_added", function(childSnapshot) {
     var childObj = childSnapshot.val();
+    var nextArrival = childObj.time + childObj.frequency;
+
     var newTr = $("<tr>");
 
     newTr.append("<td>" + childObj.name + "</td>");
     newTr.append("<td>" + childObj.destination + "</td>");
     newTr.append("<td>" + childObj.frequency + "</td>");
-    newTr.append("<td>");
+    newTr.append("<td>" + nextArrival + "</td>");
     newTr.append("<td>");
 
     $("#table-body").append(newTr);
