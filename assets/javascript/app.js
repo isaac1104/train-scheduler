@@ -17,13 +17,8 @@ var config = {
 
     var trainName = $("#train-name").val().trim();
     var trainDestination = $("#train-destination").val().trim();
-    var trainTime = moment($("#train-time").val()).format("HH:mm");
-    var trainFrequency = $("#train-frequency").val().trim();
-
-    console.log(trainName);
-    console.log(trainDestination);
-    console.log(trainTime);
-    console.log(trainFrequency);
+    var trainTime = moment($("#train-time").val(), "HH:mm").format("X");
+    var trainFrequency = moment($("#train-frequency").val(), "mm").format("X");
 
     var train = {
       name: trainName,
@@ -45,13 +40,21 @@ var config = {
 //Add TD's when child is added in Firebase//
   database.ref().on("child_added", function(childSnapshot) {
     var childObj = childSnapshot.val();
-    var nextArrival = childObj.time + childObj.frequency;
+
+    var trainTimeFormat = moment.unix(childObj.time).format("HH:mm");
+    console.log(trainTimeFormat);
+
+    var trainFrequencyFormat = moment.unix(childObj.frequency).format("mm");
+    console.log(trainFrequencyFormat);
+
+    var nextArrival = moment(trainTimeFormat + trainFrequencyFormat, "HH:mm").format("X");
+    console.log(nextArrival);
 
     var newTr = $("<tr>");
 
     newTr.append("<td>" + childObj.name + "</td>");
     newTr.append("<td>" + childObj.destination + "</td>");
-    newTr.append("<td>" + childObj.frequency + "</td>");
+    newTr.append("<td>" + trainFrequencyFormat + "</td>");
     newTr.append("<td>" + nextArrival + "</td>");
     newTr.append("<td>");
 
