@@ -1,8 +1,12 @@
+body {
+  background-image: url("../images/restaurant_icons.png");
+}
+
 #submit {
   margin-top: 20px;
 }
 
 #jumbotron {
-  background-color: #33b5e5;
+  background-color: powderblue;
   color: #263238;
 }
