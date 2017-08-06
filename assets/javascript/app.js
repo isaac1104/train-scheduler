@@ -16,12 +16,13 @@ $(document).ready(function() {
   $("#submit").on("click", function(event) {
     event.preventDefault();
 
-    if ($("#train-name").val().trim() !== "") {
-      //Set values from each input field to varibles//
-      var trainName = $("#train-name").val().trim();
-      var trainDestination = $("#train-destination").val().trim();
-      var trainTime = moment($("#train-time").val().trim(), "HH:mm").format("X");
-      var trainFrequency = $("#train-frequency").val().trim();
+    //Set values from each input field to varibles//
+    var trainName = $("#train-name").val().trim();
+    var trainDestination = $("#train-destination").val().trim();
+    var trainTime = moment($("#train-time").val().trim(), "HH:mm").format("X");
+    var trainFrequency = $("#train-frequency").val().trim();
+
+    if (trainName !== "" && trainDestination !== "" && trainTime !== "" && trainFrequency !== "") {
 
       //Object called train//
       var train = {
@@ -44,6 +45,7 @@ $(document).ready(function() {
   //Add TD's when child is added in Firebase//
   database.ref().on("child_added", function(childSnapshot) {
     var childObj = childSnapshot.val();
+    console.log(childObj);
 
     //NEXT ARRIVAL & MINUTES AWAY CALCULATIONS====================================//
     var trainTime = moment($("#train-time").val(), "HH:mm A").format("X");
@@ -54,7 +56,7 @@ $(document).ready(function() {
     //============================================================================//
 
     //Create new table row element//
-    var newTr = $("<tr>");
+    var newTr = $("<tr class='table-row'>");
 
     //Append table details into dynamically created table row//
     newTr.append("<td>" + childObj.name + "</td>");
@@ -62,10 +64,18 @@ $(document).ready(function() {
     newTr.append("<td>" + childObj.frequency + "</td>");
     newTr.append("<td id='nextArrival'>" + nextTrain + "</td>");
     newTr.append("<td id='minAway'>" + trainMinute + "</td>");
+    newTr.append("<td class='deleteButton'>" + "<button class='btn btn-xs btn-danger'>" + "X" + "</button>");
 
     //Append dynamically created table row into tbody//
     $("#table-body").append(newTr);
   }, function(errorObject) {
     console.log(errorObject);
+  });
+
+  $(document).on("click", ".deleteButton", function() {
+    $(this).closest("tr").remove();
+    getKey = $(this).parent().parent().attr('class');
+    console.log(getKey);
+    database.ref(getKey).remove();
   });
 });
