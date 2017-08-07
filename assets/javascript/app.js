@@ -1,4 +1,10 @@
 $(document).ready(function() {
+
+  //Display current time//
+  setInterval(function() {
+    $("#current-time").html(moment().format("hh:mm:ss A"))
+  }, 1000);
+
   //Initialize Firebase//
   var config = {
     apiKey: "AIzaSyDp3BE47XQTPv0RXq6xhi6TkTxsEXnuujE",
@@ -45,7 +51,8 @@ $(document).ready(function() {
   //Add TD's when child is added in Firebase//
   database.ref().on("child_added", function(childSnapshot) {
     var childObj = childSnapshot.val();
-    console.log(childObj);
+    var childKey = childSnapshot.key;
+    console.log(childKey);
 
     //NEXT ARRIVAL & MINUTES AWAY CALCULATIONS====================================//
     var trainTime = moment($("#train-time").val(), "HH:mm A").format("X");
@@ -64,7 +71,7 @@ $(document).ready(function() {
     newTr.append("<td>" + childObj.frequency + "</td>");
     newTr.append("<td id='nextArrival'>" + nextTrain + "</td>");
     newTr.append("<td id='minAway'>" + trainMinute + "</td>");
-    newTr.append("<td class='deleteButton'>" + "<button class='btn btn-xs btn-danger'>" + "X" + "</button>");
+    newTr.append("<td>" + "<button class='deleteButton btn btn-xs btn-danger' data-key=" + childKey + ">" + "X" + "</button>");
 
     //Append dynamically created table row into tbody//
     $("#table-body").append(newTr);
@@ -72,10 +79,10 @@ $(document).ready(function() {
     console.log(errorObject);
   });
 
+  //Delete table row onclick of x button both from the html and firebase//
   $(document).on("click", ".deleteButton", function() {
     $(this).closest("tr").remove();
-    getKey = $(this).parent().parent().attr('class');
-    console.log(getKey);
-    database.ref(getKey).remove();
+    var key = $(this).attr("data-key");
+    database.ref(key).remove();
   });
 });
