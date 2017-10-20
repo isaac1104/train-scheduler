@@ -2,7 +2,7 @@ $(document).ready(function() {
 
   //Display current time//
   setInterval(function() {
-    $("#current-time").html("Current Time: " + moment().format("hh:mm:ss A"))
+    $("#current-time").html("Current Time: " + moment().format("hh:mm:ss A"));
   }, 1000);
 
   //Initialize Firebase//
@@ -36,7 +36,7 @@ $(document).ready(function() {
         destination: trainDestination,
         time: trainTime,
         frequency: trainFrequency
-      }
+      };
 
       //Push train object to the Firebase server//
       database.ref().push(train);
@@ -46,7 +46,7 @@ $(document).ready(function() {
       $("#train-time").val("");
       $("#train-frequency").val("");
     }
-  })
+  });
 
   //Add TD's when child is added in Firebase//
   database.ref().on("child_added", function(childSnapshot) {
